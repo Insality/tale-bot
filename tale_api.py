@@ -69,6 +69,9 @@ class TheTaleApi(object):
     def use_help(self):
         return self.use_ability('help')
 
+    def drop_item(self):
+        return self.use_ability('drop_item')
+
     def logout(self):
         return self.make_request('/accounts/auth/api/logout', 'post').json()
 
