@@ -62,7 +62,7 @@ class Tale_bot:
 		self.action_desc = ''
 
 	def update_info(self):
-
+		time.sleep(1)
 		hero_info = self.get_hero_info()
 		self.name = hero_info['base']['name']
 		self.log = './log/' + self.name.split()[0] + '.log'
@@ -82,7 +82,7 @@ class Tale_bot:
 		self.max_energy =  hero_info['energy']['max']
 		self.action = hero_info['action']['type']
 		self.action_desc = hero_info['action']['description']
-		time.sleep(1)
+		
 
 	def get_info(self):
 		self.update_info()
