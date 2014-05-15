@@ -44,7 +44,7 @@ while True:
 	for bot in bots:
 		bot.decision()
 
-	print(get_time() + " pause " + str(timer) + "sec")
+	# print(get_time() + " pause " + str(timer) + "sec")
 	time.sleep(timer)
 
 print("The bots was stopped")

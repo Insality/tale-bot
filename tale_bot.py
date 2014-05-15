@@ -5,6 +5,7 @@ import sys
 import os
 import logging
 from datetime import datetime
+import time
 
 from requests.cookies import create_cookie
 
@@ -61,24 +62,27 @@ class Tale_bot:
 		self.action_desc = ''
 
 	def update_info(self):
-		self.name = self.get_hero_info()['base']['name']
+
+		hero_info = self.get_hero_info()
+		self.name = hero_info['base']['name']
 		self.log = './log/' + self.name.split()[0] + '.log'
 
-		self.level = self.get_hero_info()['base']['level']
-		self.health = self.get_hero_info()['base']['health']
-		self.max_health =self.get_hero_info()['base']['max_health']
+		self.level = hero_info['base']['level']
+		self.health = hero_info['base']['health']
+		self.max_health =hero_info['base']['max_health']
 		self.health_perc = self.health/self.max_health * 100
-		self.honor = self.get_hero_info()['habits']['honor']['raw']
-		self.peacefulness = self.get_hero_info()['habits']['peacefulness']['raw']
-		self.max_exp = self.get_hero_info()['base']['experience_to_level']
-		self.exp = self.get_hero_info()['base']['experience']
-		self.is_alive = self.get_hero_info()['base']['alive']
-		self.items =  self.get_hero_info()['secondary']['loot_items_count']
-		self.max_items =  self.get_hero_info()['secondary']['max_bag_size']
-		self.energy =  self.get_hero_info()['energy']['value']
-		self.max_energy =  self.get_hero_info()['energy']['max']
-		self.action = self.get_hero_info()['action']['type']
-		self.action_desc = self.get_hero_info()['action']['description']
+		self.honor = hero_info['habits']['honor']['raw']
+		self.peacefulness = hero_info['habits']['peacefulness']['raw']
+		self.max_exp = hero_info['base']['experience_to_level']
+		self.exp = hero_info['base']['experience']
+		self.is_alive = hero_info['base']['alive']
+		self.items =  hero_info['secondary']['loot_items_count']
+		self.max_items =  hero_info['secondary']['max_bag_size']
+		self.energy =  hero_info['energy']['value']
+		self.max_energy =  hero_info['energy']['max']
+		self.action = hero_info['action']['type']
+		self.action_desc = hero_info['action']['description']
+		time.sleep(1)
 
 	def get_info(self):
 		self.update_info()
@@ -90,7 +94,7 @@ class Tale_bot:
 		info += 'Exp: %i/%i ' % (self.exp, self.max_exp)
 		info += 'Items: %i/%i ' % (self.items, self.max_items)
 		info += 'Honor/Peacef: %i/%i\n' % (self.honor, self.peacefulness)
-		info += '%s : %s' % (actions[self.action], self.action_desc)
+		info += '%s: %s' % (actions[self.action], self.action_desc)
 		info += '\n'
 		return info
 
@@ -102,28 +106,34 @@ class Tale_bot:
 	def decision(self):
 		self.update_info()
 
+		if (self.energy >= 2 and not self.is_alive):
+			self.use_help()
+			text = 'Help was used (Character is dead)' + self.get_short_info()
+			self.log_file(text)
+			return
+
 		if (self.energy >= 4):
-			if (int(self.health_perc) < 25 and self.action != 6):
+			if (int(self.health_perc) < 25 and self.action == 3):
 				self.use_help()
-				text = 'Help was used (HP < 25%%)' + get_short_info()
-				log(text)
+				text = 'Help was used (HP < 25%%)' + self.get_short_info()
+				self.log_file(text)
 
 			elif (self.energy == self.max_energy and self.items == self.max_items):
 				self.drop_item()
 				text = 'Drop item was used (Max items):' + 'Items: %i/%i' % (self.get_items, self.get_max_items) + self.get_short_info()
-				log(text)
+				self.log_file(text)
 
 			elif (self.energy == self.max_energy):
 				self.use_help()
 				text = 'Help was used (Max energy):' + self.get_short_info()
-				log(text)
+				self.log_file(text)
 
-	def log(self, text):
+	def log_file(self, text):
 		f = open(self.log, 'a')
 		f.write(get_time())
-		f.write(text)
+		f.write(text + '\n')
 		f.close()
-		print(get_time() + self.name + ' ' + text)
+		print(get_time() + self.name + ' ' + text + '\n')
 
 	def get_game_info(self):
 		return self.make_request('/game/api/info').json()
