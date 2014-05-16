@@ -8,9 +8,7 @@ from accounts import accounts
 
 print('Starting tale-bots:\n')
 
-log = './log/general.log'
-
-
+log = 'D:/Dropbox/general.log'
 
 bots = []
 for acc in accounts:
@@ -21,14 +19,14 @@ for bot in bots:
 	bot.update_info()
 	print(bot.get_info())
 
-
 # Если были добавлены новые персонажы, активируйте на один запуск:
 # for bot in bots:
 # 	bot.send_friendship('12238')
 
 timer = 30
-general_info_counter = 30
-general_info_max = 30
+# 120 - час для таймера 30 сек. 
+general_info_counter = 180
+general_info_max = 180
 print("start the loop of decisions")
 while True:
 	general_info_counter += 1
@@ -40,11 +38,11 @@ while True:
 			f.write(bot.get_info() + '\n')
 		f.write('===============================\n\n')
 		f.close()
+		print(get_time() + " general info was updated\n")
 
 	for bot in bots:
 		bot.decision()
 
-	# print(get_time() + " pause " + str(timer) + "sec")
 	time.sleep(timer)
 
-print("The bots was stopped")
+print("The Tale-bots was stopped")

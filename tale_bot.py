@@ -64,6 +64,7 @@ class Tale_bot:
 	def update_info(self):
 		time.sleep(1)
 		hero_info = self.get_hero_info()
+
 		self.name = hero_info['base']['name']
 		self.log = './log/' + self.name.split()[0] + '.log'
 
@@ -106,26 +107,25 @@ class Tale_bot:
 	def decision(self):
 		self.update_info()
 
-		if (self.energy >= 2 and not self.is_alive):
-			self.use_help()
-			text = 'Help was used (Character is dead)' + self.get_short_info()
-			self.log_file(text)
-			return
-
 		if (self.energy >= 4):
-			if (int(self.health_perc) < 25 and self.action == 3):
+			if (not self.is_alive):
 				self.use_help()
-				text = 'Help was used (HP < 25%%)' + self.get_short_info()
+				text = 'Help was used (Character is dead). ' + self.get_short_info()
+				self.log_file(text)
+
+			elif (int(self.health_perc) < 25 and self.action == 3):
+				self.use_help()
+				text = 'Help was used (HP < 25%%). ' + self.get_short_info()
 				self.log_file(text)
 
 			elif (self.energy == self.max_energy and self.items == self.max_items):
 				self.drop_item()
-				text = 'Drop item was used (Max items):' + 'Items: %i/%i' % (self.get_items, self.get_max_items) + self.get_short_info()
+				text = 'Drop item was used (Max items). Items: %i/%i ' % (self.get_items, self.get_max_items) + self.get_short_info()
 				self.log_file(text)
 
 			elif (self.energy == self.max_energy):
 				self.use_help()
-				text = 'Help was used (Max energy):' + self.get_short_info()
+				text = 'Help was used (Max energy): ' + self.get_short_info()
 				self.log_file(text)
 
 	def log_file(self, text):
