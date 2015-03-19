@@ -18,10 +18,16 @@ for bot in bots:
 	bot.login()
 	bot.update_info()
 	print(bot.get_info())
+	print(bot.get_quest_text_choice())
+
+
 
 # Если были добавлены новые персонажы, активируйте на один запуск:
 # for bot in bots:
 # 	bot.send_friendship('12238')
+
+# print(bots[5].get_quest_info())
+# print(bots[5].get_quest_text_choice())
 
 timer = 30
 # 120 - час для таймера 30 сек. 

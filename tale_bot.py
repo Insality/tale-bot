@@ -113,14 +113,14 @@ class Tale_bot:
 				text = 'Help was used (Character is dead). ' + self.get_short_info()
 				self.log_file(text)
 
-			elif (int(self.health_perc) < 25 and self.action == 3):
+			elif (int(self.health_perc) < 25 and self.action == 3 and self.energy >= 8):
 				self.use_help()
 				text = 'Help was used (HP < 25%%). ' + self.get_short_info()
 				self.log_file(text)
 
 			elif (self.energy == self.max_energy and self.items == self.max_items):
-				self.drop_item()
-				text = 'Drop item was used (Max items). Items: %i/%i ' % (self.get_items, self.get_max_items) + self.get_short_info()
+				self.use_ability('drop_item')
+				text = 'Drop item was used (Max items). Items: %i/%i ' % (self.items, self.max_items) + self.get_short_info()
 				self.log_file(text)
 
 			elif (self.energy == self.max_energy):
@@ -140,6 +140,22 @@ class Tale_bot:
 
 	def get_account_info(self):
 		return self.get_game_info()['data']['account']
+
+	def get_quest_info(self):
+		return self.get_game_info()['data']['account']['hero']['quests']
+
+	def get_quest_text_choice(self):
+		quests = self.get_quest_info()
+		info = ''
+		for quest in quests['quests']:
+			info += 'Quest name %s: %s\n' % (quest['line'][0]['name'], quest['line'][0]['action'])
+			info += 'Alternatives: %s ' % quest['line'][0]['choice_alternatives']
+			info += 'Choice: %s ' % quest['line'][0]['choice']
+			info += '\n\n'
+		return info
+
+	# def choose_quest(self, uid):
+	# 	return self.make_request('/game/quests/api/choose/', 'post', data=dict(option_uid=uid)).json()
 
 	def get_hero_info(self):
 		return self.get_game_info()['data']['account']['hero']
@@ -178,3 +194,8 @@ class Tale_bot:
 
 		response = self.make_request('/accounts/auth/api/login', 'post', data=dict(email=self.email, password=self.password))
 		return response
+
+
+# check quest in list:
+# quest['line'][0]['choice_alternatives'][0][1] in quest_evil
+# id: first index

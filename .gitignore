@@ -1,4 +1,4 @@
-accounts*
+accounts.py
 ./log/*
-./log
+log/
 *.pyc
