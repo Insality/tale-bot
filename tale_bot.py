@@ -133,7 +133,7 @@ class Tale_bot:
 		f.write(get_time())
 		f.write(text + '\n')
 		f.close()
-		print(get_time() + self.name + ' ' + text + '\n')
+		logging.info(get_time() + self.name + ' ' + text + '\n')
 
 	def get_game_info(self):
 		return self.make_request('/game/api/info').json()
